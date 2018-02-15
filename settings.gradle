@@ -11,6 +11,8 @@ include "components:users"
 include "components:rest-support"
 include "components:test-support"
 
+
+include "platform-services:turbine-server"
 include "platform-services:hystrix-dashboard"
 include "platform-services:eureka-server"
 
