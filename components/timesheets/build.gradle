@@ -1,5 +1,6 @@
 dependencies {
     compile project(":components:rest-support")
+    compile("org.springframework.cloud:spring-cloud-netflix-core:1.4.3.RELEASE")
 
     testCompile project(":components:test-support")
 }

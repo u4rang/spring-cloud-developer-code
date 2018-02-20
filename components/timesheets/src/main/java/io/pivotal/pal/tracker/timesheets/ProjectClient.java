@@ -1,18 +1,12 @@
 package io.pivotal.pal.tracker.timesheets;
 
-import org.springframework.web.client.RestOperations;
+import org.springframework.cloud.netflix.feign.FeignClient;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
-public class ProjectClient {
-
-    private final RestOperations restOperations;
-    private final String endpoint;
-
-    public ProjectClient(RestOperations restOperations, String registrationServerEndpoint) {
-        this.restOperations = restOperations;
-        this.endpoint = registrationServerEndpoint;
-    }
-
-    public ProjectInfo getProject(long projectId) {
-        return restOperations.getForObject(endpoint + "/projects/" + projectId, ProjectInfo.class);
-    }
+@FeignClient("${registration.server.endpoint}")
+interface ProjectClient {
+    @RequestMapping(method = RequestMethod.GET, value = "/projects/{projectId}")
+    ProjectInfo getProject(@PathVariable("projectId") long projectId);
 }
