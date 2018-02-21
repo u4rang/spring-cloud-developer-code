@@ -11,6 +11,7 @@ import java.util.List;
 
 import static io.pivotal.pal.tracker.projects.ProjectInfo.projectInfoBuilder;
 import static io.pivotal.pal.tracker.projects.data.ProjectFields.projectFieldsBuilder;
+import static io.pivotal.pal.tracker.restsupport.InjectDelay.injectDelay;
 import static java.util.stream.Collectors.toList;
 
 @RestController
@@ -39,6 +40,8 @@ public class ProjectController {
 
     @GetMapping("/{projectId}")
     public ProjectInfo get(@PathVariable long projectId) {
+        injectDelay(1L);
+
         ProjectRecord record = gateway.find(projectId);
 
         if (record != null) {

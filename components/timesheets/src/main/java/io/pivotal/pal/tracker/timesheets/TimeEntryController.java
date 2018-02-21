@@ -12,6 +12,7 @@ import java.util.List;
 
 import static io.pivotal.pal.tracker.timesheets.TimeEntryInfo.timeEntryInfoBuilder;
 import static io.pivotal.pal.tracker.timesheets.data.TimeEntryFields.timeEntryFieldsBuilder;
+import static io.pivotal.pal.tracker.restsupport.InjectDelay.injectDelay;
 import static java.util.stream.Collectors.toList;
 
 @RestController
@@ -26,9 +27,9 @@ public class TimeEntryController {
         this.client = client;
     }
 
-
     @PostMapping
     public ResponseEntity<TimeEntryInfo> create(@RequestBody TimeEntryForm form) {
+        injectDelay(1L);
         if (projectIsActive(form.projectId)) {
             TimeEntryRecord record = gateway.create(mapToFields(form));
             return new ResponseEntity<>(present(record), HttpStatus.CREATED);
@@ -38,11 +39,11 @@ public class TimeEntryController {
 
     @GetMapping
     public List<TimeEntryInfo> list(@RequestParam long userId) {
+        injectDelay(3L);
         return gateway.findAllByUserId(userId).stream()
             .map(this::present)
             .collect(toList());
     }
-
 
     private TimeEntryInfo present(TimeEntryRecord record) {
         return timeEntryInfoBuilder()
