@@ -1,5 +1,7 @@
 dependencies {
     compile project(":components:rest-support")
 
+    compile("org.springframework.boot:spring-boot-actuator:1.5.9.RELEASE")
+
     testCompile project(":components:test-support")
 }
