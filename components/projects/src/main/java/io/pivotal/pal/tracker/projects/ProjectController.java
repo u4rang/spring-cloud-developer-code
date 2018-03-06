@@ -3,6 +3,9 @@ package io.pivotal.pal.tracker.projects;
 import io.pivotal.pal.tracker.projects.data.ProjectDataGateway;
 import io.pivotal.pal.tracker.projects.data.ProjectFields;
 import io.pivotal.pal.tracker.projects.data.ProjectRecord;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,10 +20,15 @@ import static java.util.stream.Collectors.toList;
 @RequestMapping("/projects")
 public class ProjectController {
 
-    private final ProjectDataGateway gateway;
+    private final Logger log = LoggerFactory.getLogger(ProjectController.class);
 
-    public ProjectController(ProjectDataGateway gateway) {
+    private final ProjectDataGateway gateway;
+    private final long delayMillis;
+
+    public ProjectController(ProjectDataGateway gateway,
+                             @Value("${delay.millis:0}") long delayMillis) {
         this.gateway = gateway;
+        this.delayMillis = delayMillis;
     }
 
     @PostMapping
@@ -42,6 +50,16 @@ public class ProjectController {
         ProjectRecord record = gateway.find(projectId);
 
         if (record != null) {
+            log.info("returning project info for project id {}", projectId);
+
+            if (delayMillis > 0) {
+                log.info("artificial delay of {} ms", delayMillis);
+                try {
+                    Thread.sleep(delayMillis);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
             return present(record);
         }
 
